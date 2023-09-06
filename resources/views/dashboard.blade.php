@@ -14,7 +14,7 @@
             </div>
         </div>
 
-        <div class="max-w-7xl mx-auto mt-10 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto mt-10 sm:px-6 lg:px-8" id="plans">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     Seems you're not set up with a subscription yet. <br>
@@ -32,7 +32,6 @@
             $(document).on('click', '.select-plan', (e) => {
                 e.preventDefault();
                 const id = e.target.getAttribute("id");
-                console.log(id);
                 subscribe(id);
             });
 
@@ -55,7 +54,7 @@
                                 <p class="text-l text-white mb-2">Ksh. ${plan.price} for ${parseInt(plan.validity/30)} months</p>
                                 <p class="text-md text-gray-700 text-base">${plan.description}</p>
                             </div>
-                            <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-4 rounded select-plan" id="select-plan-${plan.id}">Select</button>
+                            <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-4 rounded select-plan" id="${plan.id}">Select</button>
                         </div>`);
                     });
                 })
@@ -63,21 +62,26 @@
         });
 
         function subscribe(selectedPlan) {
-            fetch("{{ route('subscription.subscribe') }}", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: {
-                        _token: "{{ csrf_token() }}"
-                    }
-                })
-                .then(res => res.json())
-                .then(response => {
-                    console.log(response.data);
-                })
-                .catch(err => console.log(err));
+            if (confirm("Are you sure you want to subscribe?")){
+                fetch("{{ route('subscription.subscribe') }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            _token: "{{ csrf_token() }}",
+                            plan_id: selectedPlan
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(response => {
+                        alert(response.message);
+                        if (response.success) $("#plans").css("display", "none");
+                    })
+                    .catch(err => console.log(err));
+            }
         }
+        
     </script>
 </x-app-layout>
