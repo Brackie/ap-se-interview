@@ -14,6 +14,7 @@
             </div>
         </div>
 
+        @if(auth()->user()->subscriptionPlan === null)
         <div class="max-w-7xl mx-auto mt-10 sm:px-6 lg:px-8" id="plans">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
@@ -25,6 +26,7 @@
                 </div>
             </div>
         </div>
+        @endif
     </div>
 
     <script>
@@ -34,6 +36,8 @@
                 const id = e.target.getAttribute("id");
                 subscribe(id);
             });
+
+            console.log("{{ auth()->user()->subscriptioPlan }}");
 
             fetch("{{ route('subscription.plans') }}", {
                     method: 'GET',
@@ -82,6 +86,6 @@
                     .catch(err => console.log(err));
             }
         }
-        
+
     </script>
 </x-app-layout>
